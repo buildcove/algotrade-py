@@ -1,0 +1,92 @@
+[project]
+name = "algotrade"
+version = "0.1.0"
+description = "Automated futures trading system (research)"
+readme = "README.md"
+requires-python = ">=3.12,<3.14"
+license = { file = "LICENSE" }
+keywords = ["trading", "futures", "backtesting", "fastapi", "typer"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Office/Business :: Financial",
+]
+urls = { Repository = "https://github.com/psdon/algotrade-py" }
+dependencies = [
+    "pandas>=2.2.2",
+    "pytz==2025.2",
+    "holidays==0.81",
+    "retry==0.9.2",
+    "pandas-ta",
+    "ib-async==2.0.1",
+    "tvdatafeed @ git+https://github.com/baselsm/tvdatafeed.git@cfc26940b273641116effa1b7c12982191b5a941",
+    "typer==0.19.2",
+    "apscheduler==3.11.0",
+    "fastapi==0.116.1",
+    "uvicorn[standard]>=0.30.0",
+    "pydantic-settings==2.3.4",
+    "structlog",
+    "pyjwt==2.10.1",
+    "requests>=2.31.0",
+    "joblib>=1.5.2",
+    "duckdb>=1.4.2",
+    "pyarrow>=12.0.0",
+]
+
+[project.scripts]
+algotrade = "algotrade.cli.main:app"
+
+[project.optional-dependencies]
+dev = ["jupyter", "pre-commit", "black", "isort", "flake8"]
+test = ["pytest", "freezegun"]
+ml = ["scikit-learn>=1.7.2", "lightgbm>=4.6.0"]
+data = ["databento>=0.66.0"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["algotrade"]
+
+[tool.black]
+line-length = 130
+exclude = """
+/(
+    .git
+  | .hg
+  | .mypy_cache
+  | .tox
+  | .venv
+  | venv
+  | _build
+  | buck-out
+  | build
+  | dist
+  | .egg-info
+  | tmp
+  | trained
+  | catboost_info
+)/
+"""
+
+[tool.isort]
+include_trailing_comma = true
+use_parentheses = true
+multi_line_output = 3
+default_section = "FIRSTPARTY"
+line_length = 80
+skip = "migrations,build,*.egg-info,venv,.venv,.tox,alembic,.git"
+
+[tool.coverage.run]
+source = ["algotrade"]
+branch = true
+omit = [""]
+
+[tool.coverage.report]
+exclude_lines = ["# noqa", "raise NotImplementedError"]

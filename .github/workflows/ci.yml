@@ -1,0 +1,34 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Sync dependencies
+        run: uv sync --frozen --extra dev --extra test
+
+      - name: Format (black)
+        run: uv run black --check .
+
+      - name: Imports (isort)
+        run: uv run isort --check-only .
+
+      - name: Lint (flake8)
+        run: uv run flake8 algotrade/core algotrade/api algotrade/cli algotrade/settings.py algotrade/contracts.py algotrade/scheduler.py algotrade/schedules.py algotrade/tv.py main.py tests/core tests/test_nz_utils.py
+
+      - name: Run tests
+        run: uv run pytest -q
